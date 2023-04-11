@@ -9,9 +9,9 @@
 <body>
   <%- include('./component/header') %>
   <section>
-    <form action="">
-      <label for="Title">Titre</label>
-      <input type="text" id="Title" name="Title"><br>
+    <form action="/ajouter-tache" method="POST">
+      <label for="title">Titre</label>
+      <input type="text" id="title" name="title"><br>
       <label for="description">Description de la tâche</label><br>
       <textarea name="description" id="description" cols="30" rows="10"></textarea><br>
       <input type="submit" value="Enregistrer">
@@ -22,10 +22,14 @@
     <h2>Liste des tâches :</h2>
     <ul>
       <% for(i=0; i < data.length; i++) { %>
-      <li><%= data[i].title + ': ' + data[i].description %></li>
+      <li>
+        <%= data[i].title + ': ' + data[i].description %>
+        <form action="/supprimer-tache/<%= data[i].id %>" method="POST">
+          <input type="submit" value="Supprimer">
+          </form>
+      </li>
       <% } %>
     </ul>
-
   </section>
 </body>
 </html>
