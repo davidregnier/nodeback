@@ -4,12 +4,19 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>Document</title>
 </head>
 <body>
   <%- include('./component/header') %>
+  <div id="popup" style="display:none;">
+    <p>Êtes-vous sûr de vouloir supprimer cette tâche ?</p>
+    <input type="button" value="oui" onclick="Confirmer()">
+    <input type="button" value="annuler" onclick="Annuler()">
+  </div>
   <section>
-    <form action="/ajouter-tache" method="POST">
+    <form  action="/ajouter-tache" method="POST">
+      <input type="hidden" name="id" id="id">
       <label for="title">Titre</label>
       <input type="text" id="title" name="title"><br>
       <label for="description">Description de la tâche</label><br>
@@ -24,12 +31,39 @@
       <% for(i=0; i < data.length; i++) { %>
       <li>
         <%= data[i].title + ': ' + data[i].description %>
-        <form action="/supprimer-tache/<%= data[i].id %>" method="POST">
-          <input type="submit" value="Supprimer">
-          </form>
+          <input type="button" value="Suprrimer" onclick="showConfirmationPopup('<%= data[i].id %>')">
+          <input type="button" value="Modifier" onclick="putData('<%= data[i].id %>', '<%= data[i].title %>', '<%= data[i].description %>')">
       </li>
       <% } %>
     </ul>
   </section>
 </body>
+<script>
+  function putData(id, title, description){
+    document.getElementById('id').value = id;
+    document.getElementById('title').value = title;
+    document.getElementById('description').value = description;
+  }
+  function deleteData(id){
+    let endPoint =`ajouter-tache/${id}`
+    fetch(endPoint, {method : "DELETE"})
+    .then(res => res.json())
+    .then(data => window.location.href = data.routeRacine)
+    .catch(error => console.error(error));
+  }
+  function showConfirmationPopup(id) {
+    selectedId = id; // Stocker l'ID de la tâche sélectionnée pour la suppression
+    document.getElementById("popup").style.display = "block";
+  }
+
+  function Annuler() {
+    // selectedId = null; // Réinitialiser l'ID de la tâche sélectionnée
+    document.getElementById("popup").style.display = "none";
+  }
+  function Confirmer() {
+    deleteData(selectedId);
+    Annuler();
+  }
+  c
+</script>
 </html>
